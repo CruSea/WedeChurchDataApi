@@ -1,0 +1,21 @@
+{
+  "swagger": "2.0",
+  "x-api-id": "wedechurchdataapi",
+  "info": {
+    "version": "1.0.0",
+    "title": "wedechurchdataAPI"
+  },
+  "paths": {},
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json",
+    "application/x-www-form-urlencoded",
+    "multipart/form-data"
+  ],
+  "schemes": [
+    "https"
+  ],
+  "host": "localhost:8000"
+}
