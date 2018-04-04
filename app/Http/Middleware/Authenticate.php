@@ -41,7 +41,12 @@ class Authenticate
                 return redirect()->guest('auth/login');
             }
         }
-
+    
         return $next($request);
+
+        // if(Auth::check())
+        //     return $next($request);
+
+        //     return response('Unauthorized.', 401);
     }
 }

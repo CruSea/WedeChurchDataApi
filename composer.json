@@ -8,7 +8,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "tymon/jwt-auth": "0.5.*",
-        "zizaco/entrust": "dev-laravel-5"
+        "zizaco/entrust": "dev-laravel-5",
+        "irazasyed/jwt-auth-guard": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -49,5 +50,11 @@
     },
     "config": {
         "preferred-install": "dist"
+    },
+    "repositories": {
+    "packagist.org": {
+      "type": "composer",
+      "url": "https://packagist.org"
     }
+  }
 }

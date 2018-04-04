@@ -12,6 +12,11 @@
 */
 
 Route::post('user', 'JwtAuthenticateController@createUser');
+Route::post('authenticate', 'JwtAuthenticateController@authenticate');
+Route::get('isauth', 'JwtAuthenticateController@isAuthenticated');
+
+Route::group([ 'middleware' => 'authenticated'], function()
+{
 Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users']], function()
 {
         Route::get('users', 'JwtAuthenticateController@index');
@@ -30,7 +35,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users
         Route::post('verify/{verify}', 'ChurchesController@verify');
 });
 
-Route::post('authenticate', 'JwtAuthenticateController@authenticate');
+
 // Route::resource('churches','ChurchesController');
 // Route::resource('denominations','DenominationsController');
 
@@ -43,4 +48,4 @@ Route::get('churches/{churches}', 'ChurchesController@show');
 Route::get('denominations', 'DenominationsController@index');
 Route::get('denominations/{denominations}', 'DenominationsController@show');
 
-
+});

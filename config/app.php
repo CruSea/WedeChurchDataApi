@@ -136,7 +136,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-
+        Irazasyed\JwtAuthGuard\JwtAuthGuardServiceProvider::class,
         /*
          * Application Service Providers...
          */

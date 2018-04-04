@@ -22,8 +22,21 @@ class JwtAuthenticateController extends Controller
     {
         return response()->json(['auth'=>Auth::user(), 'users'=>User::all()]);
     }
-
-    
+   
+    public function isAuthenticated(Request $request) {
+        $token = JWTAuth::getToken();
+        if(! $token){
+            return response()->json('token not provided');
+        }
+        // if (! $token = JWTAuth::parseToken()) {
+        //     return response()->json('no');
+        // }
+        $user = JWTAuth::toUser($token);
+        if($user){
+            return response()->json('u cant access');
+        }
+        return response()->json($user);
+    }
     public function authenticate(Request $request)
     {
         $credentials = $request->only('email', 'password');

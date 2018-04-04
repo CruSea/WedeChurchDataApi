@@ -33,7 +33,8 @@ class Kernel extends HttpKernel
         'jwt.refresh' => 'Tymon\JWTAuth\Middleware\RefreshToken',
         'role' => 'App\Http\Middleware\TokenEntrustRole',
         'permission' => 'App\Http\Middleware\TokenEntrustPermission',
-        'ability' => 'App\Http\Middleware\TokenEntrustAbility'
+        'ability' => 'App\Http\Middleware\TokenEntrustAbility',
+        'authenticated'=> 'App\Http\Middleware\AuthenticatedMiddleware',
 
         //Use this when not making use of tymon jwt
 //        'role' => 'Zizaco\Entrust\Middleware\EntrustRole',
