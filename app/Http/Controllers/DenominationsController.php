@@ -18,7 +18,11 @@ class DenominationsController extends Controller
      */
     public function index()
     {
-        return response()->json(Denomination::all());
+        // $denominations = Denomination::sortByDesc('name')->paginate(5);
+        $denominations = Denomination::paginate(5);
+        // $denominations = Denomination::all();
+
+         return $denominations;
     }
 
     /**
@@ -105,5 +109,9 @@ class DenominationsController extends Controller
         }
         $denomination ->delete();
         return response()->json("denomination successfully deleted");
+    }
+    public function alldeno(){
+        $denomination = Denomination::all();
+        return $denomination;
     }
 }

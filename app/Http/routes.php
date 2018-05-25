@@ -11,17 +11,30 @@
 |
 */
 
-Route::post('user', 'JwtAuthenticateController@createUser');
+
 Route::post('authenticate', 'JwtAuthenticateController@authenticate');
 Route::get('isauth', 'JwtAuthenticateController@isAuthenticated');
+Route::post('users', 'JwtAuthenticateController@createUser');
 
 Route::group([ 'middleware' => 'authenticated'], function()
 {
 Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users']], function()
 {
+        Route::delete('users/{users}', 'JwtAuthenticateController@destroyUser');
         Route::get('users', 'JwtAuthenticateController@index');
-        Route::post('role', 'JwtAuthenticateController@createRole');
-        Route::post('permission', 'JwtAuthenticateController@createPermission');
+
+        Route::get('roles/all', 'RolesController@getRoles');
+        Route::get('roles', 'RolesController@paginatedRoles');
+        Route::post('roles', 'RolesController@store');
+        Route::put('roles/{roles}', 'RolesController@update');
+        Route::delete('roles/{roles}', 'RolesController@destroy');
+
+        Route::post('permissions', 'PermissionsController@store');
+        Route::put('permissions/{permissions}', 'PermissionsController@update');
+        Route::get('permissions/all', 'JwtAuthenticateController@getPermissions');
+        Route::get('permissions', 'PermissionsController@paginatedPermissions');
+        Route::delete('permissions/{permissions}', 'PermissionsController@destroy');
+
         Route::post('assign-role', 'JwtAuthenticateController@assignRole');
         Route::post('attach-permission', 'JwtAuthenticateController@attachPermission');
         Route::post('check', 'JwtAuthenticateController@checkRoles');
@@ -29,10 +42,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users
         Route::post('denominations', 'DenominationsController@store');
         Route::put('denominations/{denominations}', 'DenominationsController@update');
         Route::delete('denominations/{denominations}', 'DenominationsController@destroy');
+        Route::get('denominations/all', 'DenominationsController@alldeno');
 
         Route::delete('churches/{churches}', 'ChurchesController@destroy');
+
         //verify church
         Route::post('verify/{verify}', 'ChurchesController@verify');
+
 });
 
 

@@ -16,6 +16,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
+// use App\Http\Controllers\CheckUserService;
 
 class ChurchesController extends Controller
 {
@@ -24,9 +25,15 @@ class ChurchesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    // protected $checkuserService;
+    //  public function __construct(CheckUserService $checkuserService)
+    //   {
+    //      $this->checkuserService = $checkuserService;
+    //   }
     public function index()
     {
-        return response()->json(Church::all());
+        $churches = Church::paginate(5);
+        return $churches;
     }
 
     /**
@@ -67,8 +74,9 @@ class ChurchesController extends Controller
         $church->longitude = $request->input('longitude');
         $church->phone_number = $request->input('phone_number');
         $church->email = $request->input('email');
-        $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
-        $church->denomination_id = $denomination->id;
+        $church->denomination = $request->input('denomination');
+        // $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
+        // $church->denomination_id = $denomination->id;
 
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
@@ -128,18 +136,24 @@ class ChurchesController extends Controller
             return response()->json(['church does not exist'], 404);
         }
         $user_id = $user->id;
-        if($church->user_id != $user_id){
-            return response()->json(['permission to update church denied'], 404);
-        }
-        $data = $request->all();
-        $church->fill($data);
-        if($request->input('denomination')){
-            $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
-            $church->denomination_id = $denomination->id;
-        }
+        if($church->user_id == $user_id || $user->hasRole('admin')){
+            $data = $request->all();
+            $church->fill($data);
+            if($request->input('denomination')){
+                    $church->denomination = $request->input('denomination');
+            }
+        // if($request->input('denomination')){
+        //     $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
+        //     $church->denomination_id = $denomination->id;
+        // }
         $church->save();
         
         return response()->json("church successfully updated");
+        }
+        else{
+            return response()->json(['permission to update church denied'], 404);
+        }
+        
     }
 
     /**
@@ -157,20 +171,13 @@ class ChurchesController extends Controller
         $church ->delete();
         return response()->json("church successfully deleted");
     }
-    public function verify(Request $request, $id){
-        $verify = new Verify_church();
+    public function verify($id){
+        $church = Church::find($id);
         // $church = Church::where('name', '=', $request->input('church'))->first();
         // $verify->church_id= $church->id;
-        $verify->church_id= $id;
-        $verify->verified = 1;
+        $church->verified = true;
 
-        // if($request->input('value')=='true'){
-        //     $verify->verified = 1;
-        // }
-        // else{
-        //     $verify->verified = 0;
-        // }
-        $verify->save();
+        $church->save();
         return response()->json("church verified");
     }
     

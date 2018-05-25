@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use App\User;
+use App\Church;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +31,11 @@ class DatabaseSeeder extends Seeder
         {
             User::create($user);
         }
-
+        Model::reguard();
+        
+    
+    
+        Model::unguard();
         DB::table('churches')->delete();
 
         $churches = array(
@@ -43,7 +48,29 @@ class DatabaseSeeder extends Seeder
         {
             Church::create($church);
         }
-
         Model::reguard();
     }
+    // public function run()
+    // {
+    //     Model::unguard();
+
+    //     // $this->call(UserTableSeeder::class);
+    //     DB::table('roles')->delete();
+
+    //     $roles = array(
+    //         ['name' => 'admin'],
+    //         ['name' => 'datacollector']
+    //     );
+
+    //     // Loop through each user above and create the record for them in the database
+    //     foreach ($roles as $role)
+    //     {
+    //         Role::create($role);
+    //     }
+    //     $role = Role::where('name', '=', 'admin');
+    //     $user = User::where('email', '=', 'chris@scotch.io')->first();
+    //     $user->roles()->attach($role->id);
+    //     Model::reguard();
+    // }
+    
 }

@@ -20,7 +20,12 @@ class JwtAuthenticateController extends Controller
     
     public function index()
     {
-        return response()->json(['auth'=>Auth::user(), 'users'=>User::all()]);
+        $user = Auth::user();
+        $email = $user->email;
+        $users = User::whereNotIn('email',[$email])->paginate(5);
+        // $users = User::paginate(5);
+        return $users;
+        // return response()->json(['auth'=>Auth::user(), 'users'=>User::all()]);
     }
    
     public function isAuthenticated(Request $request) {
@@ -83,6 +88,35 @@ class JwtAuthenticateController extends Controller
         return response()->json("Account created successfully");
 
     }
+    // public function updateUser(Request $request,$id)
+    // {
+    //     $data = $request->all();
+    //     $user = User::find($id);
+    //     if(! $user){
+    //         return response()->json(['user does not exist'], 404);
+    //     }
+    //     $user->fill($data);
+    //     $user->save();
+        
+    //     return response()->json("user updated");
+    // }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroyUser($id)
+    {
+        //
+        $user = User::find($id);
+        if(! $user){
+            return response()->json(['user does not exist'], 404);
+        }
+        $user ->delete();
+        return response()->json("user successfully deleted");
+    }
     public function createRole(Request $request){
 
         $role = new Role();
@@ -90,16 +124,6 @@ class JwtAuthenticateController extends Controller
         $role->save();
 
         return response()->json("role successfully created");
-
-    }
-
-    public function createPermission(Request $request){
-
-        $viewUsers = new Permission();
-        $viewUsers->name = $request->input('name');
-        $viewUsers->save();
-
-        return response()->json("permission successfully created");
 
     }
 
@@ -118,12 +142,16 @@ class JwtAuthenticateController extends Controller
     public function attachPermission(Request $request){
         $role = Role::where('name', '=', $request->input('role'))->first();
         $permission = Permission::where('name', '=', $request->input('permission'))->first();
+        if($role->hasPerm($permission->name)){
+            return response()->json('role already attached to permission');
+        }
         if(! $role || ! $permission){
             return response()->json("role or permission doesn't exit");
         }
         $role->attachPermission($permission);
 
-        return response()->json("permission attached to role");
+        return response()->json('role attached to permission');
+        // return $permission;
     }
 
     public function checkRoles(Request $request){
@@ -140,6 +168,30 @@ class JwtAuthenticateController extends Controller
             "editUser" => $user->can('edit-user'),
             "listUsers" => $user->can('list-users')
         ]);
+    }
+    
+    public function updateRoles(Request $request, $id){
+        $data = $request->all();
+        $role = Role::find($id);
+        if(! $role){
+            return response()->json(['role does not exist'], 404);
+        }
+        $role->fill($data);
+        $role->save();
+        
+        return response()->json("role updated");
+    }
+    public function destroyRoles($id){
+        $role = Role::find($id);
+        if(! $role){
+            return response()->json(['role does not exist'], 404);
+        }
+        $role ->delete();
+        return response()->json("role successfully deleted");
+    }
+    public function getPermissions(){
+        $permission = Permission::all();
+        return $permission;
     }
 
 }

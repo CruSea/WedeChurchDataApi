@@ -28,9 +28,11 @@ class ChurchsDenominations extends Migration
             $table->string('longitude');
             $table->string('phone_number');
             $table->string('email');
-            $table->integer('denomination_id')->unsigned();
-            $table->foreign('denomination_id')->references('id')->on('denominations')
-                ->onUpdate('cascade')->onDelete('cascade');
+            $table->string('denomination');
+            $table->boolean('verified');
+            // $table->integer('denomination_id')->unsigned();
+            // $table->foreign('denomination_id')->references('id')->on('denominations')
+            //     ->onUpdate('cascade')->onDelete('cascade');
             
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')
@@ -38,14 +40,14 @@ class ChurchsDenominations extends Migration
                 
             $table->timestamps();
         });
-        Schema::create('verify_churches', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('church_id')->unsigned();
-            $table->foreign('church_id')->references('id')->on('churches')
-                ->onUpdate('cascade')->onDelete('cascade');
-            $table->boolean('verified');
-            $table->timestamps();
-        });
+        // Schema::create('verify_churches', function (Blueprint $table) {
+        //     $table->increments('id');
+        //     $table->integer('church_id')->unsigned();
+        //     $table->foreign('church_id')->references('id')->on('churches')
+        //         ->onUpdate('cascade')->onDelete('cascade');
+        //     $table->boolean('verified');
+        //     $table->timestamps();
+        // });
 
         // Schema::create('church_user', function (Blueprint $table) {
         //     $table->integer('church_id')->unsigned();
