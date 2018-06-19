@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Validator;
 
 use App\Role;
 
@@ -76,19 +76,34 @@ class RolesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        $data = $request->all();
-        $role = Role::find($id);
-        if(! $role){
-            return response()->json(['role does not exist'], 404);
-        }
-        $role->fill($data);
-        $role->save();
+    // public function update(Request $request, $id)
+    // {
+    //     $data = $request->all();
+    //     $role = Role::find($id);
+    //     if(! $role){
+    //         return response()->json(['role does not exist'], 404);
+    //     }
+    //     $role->fill($data);
+    //     $role->save();
         
-        return response()->json("role updated");
-    }
+    //     return response()->json("role updated");
+    // }
+public function update() {
+        try{
+            $credential = request()->only('name', 'id');
+            $roles = Role::where('id', '=', $credential['id'])->first();
 
+                $roles->name = isset($credential['name'])? $credential['name']: $roles->name;
+                if($roles->update()){
+                    return response()->json(['status'=> true, 'message'=> 'role successfully updated', 'role'=>$roles],200);
+                } else {
+                    return response()->json(['status'=> false, 'message'=> 'unable to update role information', 'error'=>'something went wrong! please try again'],200);
+                }
+            
+        }catch (\Exception $exception){
+            return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *

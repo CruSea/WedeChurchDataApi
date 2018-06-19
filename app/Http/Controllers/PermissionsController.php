@@ -75,17 +75,22 @@ class PermissionsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update()
     {
-        $data = $request->all();
-        $role = Permission::find($id);
-        if(! $role){
-            return response()->json(['role does not exist'], 404);
+        try{
+            $credential = request()->only('name', 'id');
+            $permission = Permission::where('id', '=', $credential['id'])->first();
+
+                $permission->name = isset($credential['name'])? $credential['name']: $permission->name;
+                if($permission->update()){
+                    return response()->json(['status'=> true, 'message'=> 'permission successfully updated', 'permission'=>$permission],200);
+                } else {
+                    return response()->json(['status'=> false, 'message'=> 'unable to update role information', 'error'=>'something went wrong! please try again'],200);
+                }
+            
+        }catch (\Exception $exception){
+            return response()->json(['status'=>false, 'message'=> 'Whoops! something went wrong', 'error'=>$exception->getMessage()],500);
         }
-        $role->fill($data);
-        $role->save();
-        
-        return response()->json("role updated");
     }
 
     /**
@@ -98,10 +103,10 @@ class PermissionsController extends Controller
     {
         $permission = Permission::find($id);
         if(! $permission){
-            return response()->json(['role does not exist'], 404);
+            return response()->json(['permission does not exist'], 404);
         }
         $permission ->delete();
-        return response()->json("role successfully deleted");
+        return response()->json("permission successfully deleted");
     }
     public function paginatedPermissions(){
         $permissions = Permission::paginate(5);

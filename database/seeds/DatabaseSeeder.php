@@ -1,9 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
-use App\User;
-use App\Church;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,63 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
+         $this->call([
+             UserTableSeeder::class,
+         ]);
 
-        // $this->call(UserTableSeeder::class);
-        DB::table('users')->delete();
-
-        $users = array(
-            ['user_name' => 'Ryan Chenkie', 'email' => 'ryanchenkie@gmail.com', 'password' => Hash::make('secret')],
-            ['user_name' => 'Chris Sevilleja', 'email' => 'chris@scotch.io', 'password' => Hash::make('secret')],
-            ['user_name' => 'Holly Lloyd', 'email' => 'holly@scotch.io', 'password' => Hash::make('secret')],
-            ['user_name' => 'Adnan Kukic', 'email' => 'adnan@scotch.io', 'password' => Hash::make('secret')],
-        );
-
-        // Loop through each user above and create the record for them in the database
-        foreach ($users as $user)
-        {
-            User::create($user);
-        }
-        Model::reguard();
-        
-    
-    
-        Model::unguard();
-        DB::table('churches')->delete();
-
-        $churches = array(
-            ['church_name' => 'Beza', 'location' => 'megenagna'],
-            ['church_name' => 'cj', 'location' => 'kotebe'],
-        );
-
-        // Loop through each user above and create the record for them in the database
-        foreach ($churches as $church)
-        {
-            Church::create($church);
-        }
-        Model::reguard();
     }
-    // public function run()
-    // {
-    //     Model::unguard();
-
-    //     // $this->call(UserTableSeeder::class);
-    //     DB::table('roles')->delete();
-
-    //     $roles = array(
-    //         ['name' => 'admin'],
-    //         ['name' => 'datacollector']
-    //     );
-
-    //     // Loop through each user above and create the record for them in the database
-    //     foreach ($roles as $role)
-    //     {
-    //         Role::create($role);
-    //     }
-    //     $role = Role::where('name', '=', 'admin');
-    //     $user = User::where('email', '=', 'chris@scotch.io')->first();
-    //     $user->roles()->attach($role->id);
-    //     Model::reguard();
-    // }
-    
 }

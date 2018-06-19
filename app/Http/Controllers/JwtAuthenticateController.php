@@ -193,6 +193,20 @@ class JwtAuthenticateController extends Controller
         $permission = Permission::all();
         return $permission;
     }
+    public function checkPermissions(Request $request){
+        $role = Role::where('name', '=', $request->input('role'))->first();
+        $permissions = Permission::all();
+        foreach ($permissions as $permission) {
+            // return $permission;
+            return response()->json(['permission' => $permission]);
+            // return response()->json(['status'=> true, 'message'=> 'success', 
+            //     'permission'=>$permission],200);
+        }
+        
+    }
+    // if($role->hasPerm($permission->name)){
+    //         return $permission;
+    //         }
 
 }
 

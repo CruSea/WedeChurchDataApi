@@ -14,7 +14,7 @@
 
 Route::post('authenticate', 'JwtAuthenticateController@authenticate');
 Route::get('isauth', 'JwtAuthenticateController@isAuthenticated');
-Route::post('users', 'JwtAuthenticateController@createUser');
+Route::post('register', 'JwtAuthenticateController@createUser');
 
 Route::group([ 'middleware' => 'authenticated'], function()
 {
@@ -26,18 +26,19 @@ Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users
         Route::get('roles/all', 'RolesController@getRoles');
         Route::get('roles', 'RolesController@paginatedRoles');
         Route::post('roles', 'RolesController@store');
-        Route::put('roles/{roles}', 'RolesController@update');
-        Route::delete('roles/{roles}', 'RolesController@destroy');
+        Route::put('roles', 'RolesController@update');
+        Route::delete('roles/{id}', 'RolesController@destroy');
 
         Route::post('permissions', 'PermissionsController@store');
-        Route::put('permissions/{permissions}', 'PermissionsController@update');
+        Route::put('permissions', 'PermissionsController@update');
         Route::get('permissions/all', 'JwtAuthenticateController@getPermissions');
         Route::get('permissions', 'PermissionsController@paginatedPermissions');
-        Route::delete('permissions/{permissions}', 'PermissionsController@destroy');
+        Route::delete('permissions/{id}', 'PermissionsController@destroy');
 
         Route::post('assign-role', 'JwtAuthenticateController@assignRole');
         Route::post('attach-permission', 'JwtAuthenticateController@attachPermission');
         Route::post('check', 'JwtAuthenticateController@checkRoles');
+        Route::post('check-permissions', 'JwtAuthenticateController@checkPermissions');
 
         Route::post('denominations', 'DenominationsController@store');
         Route::put('denominations/{denominations}', 'DenominationsController@update');
