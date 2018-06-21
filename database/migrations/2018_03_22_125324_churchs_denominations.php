@@ -14,7 +14,7 @@ class ChurchsDenominations extends Migration
     {
         Schema::create('denominations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
             $table->string('description');
             $table->timestamps();
         });
@@ -24,8 +24,8 @@ class ChurchsDenominations extends Migration
             $table->string('church_name');
             $table->string('description');
             $table->string('location');
-            $table->string('latitude');
-            $table->string('longitude');
+            $table->string('latitude')->unique();
+            $table->string('longitude')->unique();
             $table->string('phone_number');
             $table->string('email');
             $table->string('denomination');

@@ -40,9 +40,17 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        $role = new Role();
-        $role->name = $request->input('name');
-        $role->save();
+        try{
+            $role = new Role();
+            $role->name = $request->input('name');
+            $role->save();
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1062){
+                return response()->json(['error' => 'Duplicate Entry']);
+            }
+        }
 
         return response()->json("role successfully created");
     }

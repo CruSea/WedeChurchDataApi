@@ -8,6 +8,7 @@ use App\Denomination;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Exceptions\CreateModelException;
 
 class DenominationsController extends Controller
 {
@@ -48,12 +49,21 @@ class DenominationsController extends Controller
             'name' => 'required',
             'description' => 'required'
         ]);
-        $denomination = new Denomination();
-        $denomination->name = $request->input('name');
-        $denomination->description = $request->input('description');
-        $denomination->save();
+        try{
+            $denomination = new Denomination();
+            $denomination->name = $request->input('name');
+            $denomination->description = $request->input('description');
+            $denomination->save();
 
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1062){
+                return response()->json(['error' => 'Duplicate Entry']);
+            }
+        }
         return response()->json("Denomination created successfully");
+        
     }
 
     /**

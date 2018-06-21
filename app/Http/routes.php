@@ -11,6 +11,7 @@
 |
 */
 
+Route::group(['prefix' => '/api'], function () {
 
 Route::post('authenticate', 'JwtAuthenticateController@authenticate');
 Route::get('isauth', 'JwtAuthenticateController@isAuthenticated');
@@ -18,7 +19,7 @@ Route::post('register', 'JwtAuthenticateController@createUser');
 
 Route::group([ 'middleware' => 'authenticated'], function()
 {
-Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users']], function()
+Route::group(['prefix' => '/admin', 'middleware' => ['ability:admin, create users']], function()
 {
         Route::delete('users/{users}', 'JwtAuthenticateController@destroyUser');
         Route::get('users', 'JwtAuthenticateController@index');
@@ -50,8 +51,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['ability:admin, create users
         //verify church
         Route::post('verify/{verify}', 'ChurchesController@verify');
 
-});
 
+});
 
 // Route::resource('churches','ChurchesController');
 // Route::resource('denominations','DenominationsController');
@@ -64,5 +65,7 @@ Route::get('churches/{churches}', 'ChurchesController@show');
 //denomination api
 Route::get('denominations', 'DenominationsController@index');
 Route::get('denominations/{denominations}', 'DenominationsController@show');
+
+});
 
 });

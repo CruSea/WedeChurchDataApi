@@ -39,9 +39,17 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
-        $viewUsers = new Permission();
+        try{
+            $viewUsers = new Permission();
         $viewUsers->name = $request->input('name');
         $viewUsers->save();
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1062){
+                return response()->json(['error' => 'Duplicate Entry']);
+            }
+        }
 
         return response()->json("permission successfully created");
     }

@@ -72,6 +72,7 @@ class JwtAuthenticateController extends Controller
             'user_name' => 'required',
             'password' => 'required',
         ]);
+        try{
             $user = new User();
             $user->first_name = $request->input('first_name');
             $user->last_name = $request->input('last_name');
@@ -83,6 +84,13 @@ class JwtAuthenticateController extends Controller
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
             $user->save();
+        }
+        catch (\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1062){
+                return response()->json(['error' => 'Duplicate Entry']);
+            }
+        }
         
 
         return response()->json("Account created successfully");

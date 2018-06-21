@@ -65,7 +65,8 @@ class ChurchesController extends Controller
             'email' => 'required',
             'denomination' => 'required',
         ]);
-
+   
+     try{
         $church = new Church();
         $church->church_name = $request->input('church_name');
         $church->description = $request->input('description');
@@ -77,23 +78,19 @@ class ChurchesController extends Controller
         $church->denomination = $request->input('denomination');
         // $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
         // $church->denomination_id = $denomination->id;
-
-        try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['permission to add church denied'], 404);
             }
-        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-            return response()->json(['token_expired'], $e->getStatusCode());
-        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return response()->json(['token_invalid'], $e->getStatusCode());
-        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return response()->json(['token_absent'], $e->getStatusCode());
-        }
-        
         $user_id = $user->id;
         $church->user_id = $user_id;
         $church->save();
-
+     }
+    catch (\Illuminate\Database\QueryException $e){
+            $errorCode = $e->errorInfo[1];
+            if($errorCode == 1062){
+                return response()->json(['error' => 'Duplicate Entry']);
+            }
+    }
         return response()->json("church created successfully");
     }
 
