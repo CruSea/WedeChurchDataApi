@@ -39,8 +39,8 @@ class UserTableSeeder extends Seeder
         $superAdmin->name = $roleList[1];
         $superAdmin->save();
 
-        $adminUser->attachRole($admin);
-        $superAdminUser->attachRole($superAdmin);
+        $adminUser->attach($admin);
+        $superAdminUser->attach($superAdmin);
 
         factory(User::class, 5)->create();
     }

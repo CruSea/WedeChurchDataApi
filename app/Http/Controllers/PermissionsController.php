@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Validator;
 
 use App\Permission;
 
@@ -39,6 +40,16 @@ class PermissionsController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'name' => 'required|string|max:30'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['error'=> $error],500);
+        }
         try{
             $viewUsers = new Permission();
         $viewUsers->name = $request->input('name');

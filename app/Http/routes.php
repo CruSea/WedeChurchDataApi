@@ -47,7 +47,9 @@ Route::group(['prefix' => '/admin', 'middleware' => ['ability:admin, create user
         Route::get('denominations/all', 'DenominationsController@alldeno');
 
         Route::delete('churches/{churches}', 'ChurchesController@destroy');
-
+        Route::get('denominations/names', 'ChurchesLogicController@getDenoNames');
+        Route::get('churches/count', 'ChurchesLogicController@countChurch');
+        Route::get('churches/by-denomination/count', 'ChurchesLogicController@countChurchByDenomination');
         //verify church
         Route::post('verify/{verify}', 'ChurchesController@verify');
 

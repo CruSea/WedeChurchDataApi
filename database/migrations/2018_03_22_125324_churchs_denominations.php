@@ -24,15 +24,14 @@ class ChurchsDenominations extends Migration
             $table->string('church_name');
             $table->string('description');
             $table->string('location');
-            $table->string('latitude')->unique();
-            $table->string('longitude')->unique();
+            $table->float('latitude', 10, 6)->unique();
+            $table->float('longitude', 10, 6)->unique();
             $table->string('phone_number');
             $table->string('email');
-            $table->string('denomination');
             $table->boolean('verified');
-            // $table->integer('denomination_id')->unsigned();
-            // $table->foreign('denomination_id')->references('id')->on('denominations')
-            //     ->onUpdate('cascade')->onDelete('cascade');
+            $table->integer('denomination_id')->unsigned();
+            $table->foreign('denomination_id')->references('id')->on('denominations')
+                 ->onUpdate('cascade')->onDelete('cascade');
             
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')

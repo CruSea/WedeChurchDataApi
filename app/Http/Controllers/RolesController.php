@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 
 use App\Role;
 
@@ -40,6 +40,16 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
+        $rules = [
+            'name' => 'required|string|max:30'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['error'=> $error],500);
+        }
         try{
             $role = new Role();
             $role->name = $request->input('name');

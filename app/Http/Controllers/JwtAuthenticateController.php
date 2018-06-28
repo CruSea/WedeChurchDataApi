@@ -7,6 +7,7 @@ use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Hash;
+use Validator;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -44,7 +45,20 @@ class JwtAuthenticateController extends Controller
     }
     public function authenticate(Request $request)
     {
+        $rules = [
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:6',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['error'=> $error],500);
+            }
+
         $credentials = $request->only('email', 'password');
+
 
         try {
             // verify the credentials and create a token for the user
@@ -62,15 +76,15 @@ class JwtAuthenticateController extends Controller
     
     public function createUser(Request $request){
         $this->validate($request, [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'region' => 'required',
-            'city' => 'required',
-            'sex' => 'required',
-            'phone_number' => 'required',
-            'email' => 'required',
-            'user_name' => 'required',
-            'password' => 'required',
+            'first_name' => 'required|string|max:30',
+            'last_name' => 'required|string|max:30',
+            'region' => 'required|string|max:30',
+            'city' => 'required|string|max:30',
+            'sex' => 'required|in:female,male',
+            'phone_number' => 'required|string|regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+            'email' => 'required|email|unique:users,email',
+            'user_name' => 'required|string|max:30',
+            'password' => 'required|min:6',
         ]);
         try{
             $user = new User();

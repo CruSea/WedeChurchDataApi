@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Denomination;
 
+use Validator;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Exceptions\CreateModelException;
@@ -43,23 +44,32 @@ class DenominationsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
-        //validation
-        $this->validate($request, [
-            'name' => 'required',
-            'description' => 'required'
-        ]);
+    {
+        $credential = request()->only('name', 'description');
+        $rules = [
+            'name' => 'required|string|max:30',
+            'description' => 'required|string|max:255'
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['error'=> $error],500);
+        }
         try{
             $denomination = new Denomination();
-            $denomination->name = $request->input('name');
-            $denomination->description = $request->input('description');
-            $denomination->save();
+            $denomination->name =  $credential['name'];
+            $denomination->description =  $credential['description'];
+            if($denomination->save()){
+                return response()->json(['status'=> true, 'message'=> 'denomination successfully added', 'denomination'=>$denomination],200);
+            }
 
         }
         catch (\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
             if($errorCode == 1062){
-                return response()->json(['error' => 'Duplicate Entry']);
+                return response()->json(['status'=> false, 'message'=>'Duplicate Entry']);
             }
         }
         return response()->json("Denomination created successfully");
@@ -122,6 +132,6 @@ class DenominationsController extends Controller
     }
     public function alldeno(){
         $denomination = Denomination::all();
-        return $denomination;
+        return response()->json(['denominations' => $denomination]);
     }
 }

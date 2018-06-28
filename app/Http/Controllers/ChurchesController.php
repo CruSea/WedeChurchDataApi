@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
+use Validator;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
@@ -45,7 +47,6 @@ class ChurchesController extends Controller
     {
         //
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -53,42 +54,51 @@ class ChurchesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    { 
-        //validation
-        $this->validate($request, [
-            'church_name' => 'required',
-            'description' => 'required',
-            'location' => 'required',
+    {
+        $credential = request()->only('church_name','description', 'location',
+                                    'latitude', 'longitude', 'phone_number' ,'email', 'denomination_id');
+        $rules = [
+            'church_name' => 'required|string|max:30',
+            'description' => 'required|string|max:255',
+            'location' => 'required|string|max:30',
+            // 'latitude' => 'required|regex:/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/',
             'latitude' => 'required',
             'longitude' => 'required',
-            'phone_number' => 'required',
-            'email' => 'required',
-            'denomination' => 'required',
-        ]);
-   
+            'phone_number' => 'required|string|unique:churches,phone_number|regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+            'email' => 'required|email|unique:churches,email',
+            'denomination_id' => 'required|exists:denominations,id',
+        ];
+        $validator = Validator::make($credential, $rules);
+
+        if($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['status'=> false ,'message'=> $error],500);
+        }
+
      try{
         $church = new Church();
-        $church->church_name = $request->input('church_name');
-        $church->description = $request->input('description');
-        $church->location = $request->input('location');
-        $church->latitude = $request->input('latitude');
-        $church->longitude = $request->input('longitude');
-        $church->phone_number = $request->input('phone_number');
-        $church->email = $request->input('email');
-        $church->denomination = $request->input('denomination');
-        // $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
-        // $church->denomination_id = $denomination->id;
+        $church->church_name =  $credential['church_name'];
+        $church->description = $credential['description'];
+        $church->location = $credential['location'];
+        $church->latitude = $credential['latitude'];
+        $church->longitude = $credential['longitude'];
+        $church->phone_number = $credential['phone_number'];
+        $church->email = $credential['email'];
+        $church->denomination_id = $credential['denomination_id'];
+
             if (! $user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['permission to add church denied'], 404);
             }
         $user_id = $user->id;
         $church->user_id = $user_id;
-        $church->save();
+         if($church->save()){
+             return response()->json(['status'=> true, 'message'=> 'church successfully added', 'church'=>$church],200);
+         }
      }
     catch (\Illuminate\Database\QueryException $e){
             $errorCode = $e->errorInfo[1];
             if($errorCode == 1062){
-                return response()->json(['error' => 'Duplicate Entry']);
+                return response()->json(['status'=> false, 'message'=>'Duplicate Entry']);
             }
     }
         return response()->json("church created successfully");
@@ -136,9 +146,6 @@ class ChurchesController extends Controller
         if($church->user_id == $user_id || $user->hasRole('admin')){
             $data = $request->all();
             $church->fill($data);
-            if($request->input('denomination')){
-                    $church->denomination = $request->input('denomination');
-            }
         // if($request->input('denomination')){
         //     $denomination = Denomination::where('name', '=', $request->input('denomination'))->first();
         //     $church->denomination_id = $denomination->id;
@@ -177,5 +184,5 @@ class ChurchesController extends Controller
         $church->save();
         return response()->json("church verified");
     }
-    
+
 }
