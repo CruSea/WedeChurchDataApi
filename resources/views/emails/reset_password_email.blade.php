@@ -1,0 +1,1 @@
+<a href="http://localhost:4200/#/forgot-password?token= {{$token}}" class="btn btn-xs btn-info pull-right">Edit</a>

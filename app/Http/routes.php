@@ -54,6 +54,7 @@ Route::group(['prefix' => '/admin', 'middleware' => ['ability:admin, create user
         Route::post('verify/{verify}', 'ChurchesController@verify');
 
 
+
 });
 
 // Route::resource('churches','ChurchesController');
@@ -69,5 +70,8 @@ Route::get('denominations', 'DenominationsController@index');
 Route::get('denominations/{denominations}', 'DenominationsController@show');
 
 });
+Route::post('request-password-reset', 'PasswordResetController@sendEmail');
+Route::post('change-password', 'ChangePasswordController@process');
+
 
 });

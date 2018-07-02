@@ -15,8 +15,10 @@ return [
     */
 
     'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
+        'domain' => 'fibitadesse@gmail.com',
+        'secret' => '0916054698',
+        // 'domain' => env('MAILGUN_DOMAIN'),
+        // 'secret' => env('MAILGUN_SECRET'),
     ],
 
     'mandrill' => [

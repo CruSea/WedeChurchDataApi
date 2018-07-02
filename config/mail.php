@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => null, 'name' => null],
+    'from' => ['address' => 'someguy@gmail.com', 'name' => 'some guy sender'],
 
     /*
     |--------------------------------------------------------------------------
@@ -120,5 +120,12 @@ return [
     */
 
     'pretend' => false,
+    'stream' => [
+       'ssl' => [
+           'allow_self_signed' => true,
+           'verify_peer' => false,
+           'verify_peer_name' => false,
+       ],
+    ]
 
 ];

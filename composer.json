@@ -9,7 +9,9 @@
         "laravel/framework": "5.1.*",
         "tymon/jwt-auth": "0.5.*",
         "zizaco/entrust": "dev-laravel-5",
-        "irazasyed/jwt-auth-guard": "^1.0"
+        "irazasyed/jwt-auth-guard": "^1.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "aws/aws-sdk-php": "^3.62"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
